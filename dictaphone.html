@@ -1,0 +1,122 @@
+<html lang="en">
+  <head>
+    <title>Dictaphone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="title">
+      <h1>
+        Dictaphone
+        <img src="img/robot.png" id="title-img">
+        <br>
+        <a href="index.html" class="back-btn"> Back </a>
+      </h1>
+      
+    </div>
+    <button class="start-btn">
+      <img src="img/mic-start.png">
+    </button>
+    <button class="listen-btn">
+      <img src="img/mic-listening.gif">
+    </button>
+    <div class="container">
+      <div class="widget" id="dictaphone">
+        <h3 class="sub-title">Dictaphone</h3>
+        <p id="spoken" class="show-text"></p>
+        <p id="speaking" class="show-text"></p>
+      </div>
+      <div class="widget" id="color">
+        <h3 class="sub-title">Change color</h3>
+      </div>
+      <div class="widget" id="other">
+        <h3 class="sub-title">Other functions</h3>
+      </div>
+    </div>
+ 
+    <script>
+      $(".listen-btn").hide();
+        $("#color").hide();
+        $("#other").hide();
+        var add_css = {
+          'animation-name': 'enlarge',
+          'animation-duration': '2s',
+          'animation-fill-mode': 'forwards'
+        }
+        $("#dictaphone").css(add_css);
+
+
+        $(".start-btn").click(function () {
+          $(".start-btn").hide();
+          $(".listen-btn").show();
+          recognition.start();
+        });
+
+        $(".listen-btn").click(function () {
+          $(".start-btn").show();
+          $(".listen-btn").hide();
+        });
+        var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+        var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+
+        var recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
+
+        recognition.onresult = function (event) {
+
+          var interim_transcript = '';
+          var final_transcript = '';
+          var text = '';
+          for (var i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              var text = event.results[i][0].transcript;
+              final_transcript += text;
+              $("#spoken").append(interim_transcript);
+            } else {
+              var text = event.results[i][0].transcript;
+              interim_transcript += text;
+              $("#speaking").html(interim_transcript);
+            }
+
+          }
+
+
+        }
+
+      recognition.onend = function (event) {
+          var spoken = $("#speaking").html();
+          var add = spoken + "<br>";
+          $("#speaking").html("");
+          if (spoken == "stop") {
+            $(".start-btn").show();
+            $(".listen-btn").hide();
+          } else if (spoken.toLowerCase() == "center") {
+            $("#spoken").css("text-align", "center");
+            $("#speaking").css("text-align", "center");
+            recognition.start();
+            /* } else if (spoken.toLowerCase() == "insert line"){
+              var add = "____________________________<br><br>";
+              $("#spoken").append(add);
+              recognition.start(); */
+          } else if (spoken.toLowerCase() == "send to email") {
+            var final = $("#spoken").html();
+            final = final.replace(/<br>/g, ". ");
+            var output = `mailto:test@example.com?body=${final}`;
+            console.log(output);
+            window.open(output);
+          } else {
+            $("#spoken").append(add);
+            recognition.start();
+          }
+
+        }
+
+    </script>
+  </body>
+</html><script type="application/javascript" src="/share.js"></script>
