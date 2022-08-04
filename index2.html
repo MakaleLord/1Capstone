@@ -1,0 +1,83 @@
+<html lang="en">
+  <head>
+    <title>Wizard Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="title">
+      <h1>
+        Wizard Assistant
+        <img src="img/robot.png" id="title-img">
+      </h1>
+    </div>
+    <button class="start-btn">
+      <img src="img/mic-start.png">
+    </button>
+    <button class="listen-btn">
+      <img src="img/mic-listening.gif">
+    </button>
+    <div class="container">
+      <div class="widget" id="dictaphone">
+        <h3 class="sub-title">Dictaphone</h3>
+      </div>
+      <div class="widget" id="color">
+        <h3 class="sub-title">Change color</h3>
+      </div>
+      <div class="widget" id="other">
+        <h3 class="sub-title">Other functions</h3>
+      </div>
+    </div>
+ 
+    <script>
+      $(".listen-btn").hide();
+      $(".start-btn").click( function(){
+        $(".start-btn").hide();
+        $(".listen-btn").show();
+        recognition.start();
+        console.log('Ready to receive a command.');
+      })
+
+      var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+      var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
+
+      var recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = function(event) {
+        var result = event.results[0][0].transcript;
+        /* console.log('Result received: ' + result + '.'); */
+        /* console.log('Confidence: ' + event.results[0][0].confidence); */
+
+        if (result.includes("dictaphone") || result.includes("Dictaphone")){  // .includes might be a new method : EXPLAIN slide !
+            window.location.replace('dictaphone.html');
+        } else if (result.includes("color") || result.includes("Color")){
+            window.location.replace('color.html');
+        } else if (result.includes("other" || result.includes("Other"))){
+            window.location.replace('other.html');
+        } else {
+          alert("Sorry, I didn't understand what you were trying to say, this is what I heard: " + result);
+        }
+
+        $(".start-btn").show();
+        $(".listen-btn").hide();
+}
+
+recognition.onspeechend = function() {
+  recognition.stop();
+  console.log("The recognition engine has stopped.");
+}
+
+recognition.onerror = function(event) {
+  diagnostic.textContent = 'Error occurred in recognition: ' + event.error;
+}
+
+    </script>
+  </body>
+</html><script type="application/javascript" src="/share.js"></script>
