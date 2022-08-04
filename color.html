@@ -1,0 +1,87 @@
+<html lang="en">
+  <head>
+    <title>Color changer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="title">
+      <h1>
+        Color changer
+        <img src="img/robot.png" id="title-img">
+        <br>
+        <a href="index.html" class="back-btn"> Back </a>
+      </h1>
+      
+    </div>
+    <button class="start-btn">
+      <img src="img/mic-start.png">
+    </button>
+    <button class="listen-btn">
+      <img src="img/mic-listening.gif">
+    </button>
+    <div class="container">
+      <div class="widget" id="dictaphone">
+        <h3 class="sub-title">Dictaphone</h3>
+      </div>
+      <div class="widget" id="color">
+        <h3 class="sub-title">Change color</h3>
+        <div id="square">
+        </div>
+      </div>
+      <div class="widget" id="other">
+        <h3 class="sub-title">Other functions</h3>
+      </div>
+    </div>
+ 
+    <script>
+      $(".listen-btn").hide();
+      $(".start-btn").click( function(){
+      $(".start-btn").hide();
+      $(".listen-btn").show();
+      recognition.start();
+      })
+      var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+      var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+     
+      var recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-US';
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+      
+      recognition.onresult = function (event) {
+      var index = event.resultIndex;
+      var result = event.results[index][0].transcript;
+      var command = result.toLowerCase();
+        
+      var output = "I heard: " + command;
+      console.log(output);
+      
+      var echo = $("#color").css("background-color");
+        $("#square").css("background-color", echo)
+      $("#color").css("background-color", command);
+      }
+      recognition.onspeechend = function() {
+        recognition.stop();
+        console.log("The recogniton engine has stopped.");
+        $(".start-btn").show();
+        $(".listen-btn").hide();
+      }
+      
+      $(".widget").hide();
+      $("#color").show();
+      
+      var add_css = {
+        'animation-name': 'enlarge',
+        'animation-duration': '2s',
+        'animation-fill-mode': 'forwards'
+      }
+      $("#color").css(add_css);
+      
+    </script>
+  </body>
+</html><script type="application/javascript" src="/share.js"></script>
